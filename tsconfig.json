@@ -15,6 +15,6 @@
     "sourceMap": true,
     "resolveJsonModule": true
   },
-  "include": ["src/index.ts", "src/commands.ts", "src/types.ts"],
+  "include": ["src/index.ts", "src/types.ts"],
   "exclude": ["node_modules", "dist", "logs"]
 }

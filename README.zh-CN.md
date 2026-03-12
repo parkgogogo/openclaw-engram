@@ -9,7 +9,7 @@
 没有隐藏的写入判断。  
 没有一个自作聪明的记忆系统替你做决定。
 
-你只需要执行一个命令。OpenClaw 就去更新你指定的那个记忆文件。
+装一个 plugin，就得到 5 个随包附带的 skill commands。OpenClaw 会去更新你指定的那个记忆文件。
 
 ## 安装
 
@@ -49,7 +49,7 @@ Engram 更简单。
 
 ## 它怎么工作
 
-每个命令都对应一个记忆文件：
+这个 plugin 随包携带了 5 个 `user-invocable` skills，并把它们暴露成 slash commands：
 
 - `/engram-user`
 - `/engram-identity`
@@ -57,7 +57,7 @@ Engram 更简单。
 - `/engram-memory`
 - `/engram-tools`
 
-你执行哪个命令，OpenClaw 就更新哪个文件。
+你执行哪个命令，OpenClaw 就会把它路由进 agent，并更新对应文件。
 
 这就是整个产品。
 
@@ -100,6 +100,8 @@ npm test
 npm run e2e:openclaw-plugin
 ```
 
-`npm test` 用来验证命令契约和包元数据。
+`npm test` 用来验证 bundled skill 契约和包元数据。
 
-`npm run e2e:openclaw-plugin` 会在隔离 profile 里跑一遍真实的本地 OpenClaw gateway 流程。
+`npm run e2e:openclaw-plugin` 会在隔离 profile 里跑一遍真实的本地 OpenClaw gateway 流程，并验证 `USER.md` 和 `TOOLS.md` 的实际写入。
+
+如果要临时覆盖 `.env` 里的 key，可以先导出 `OPENCLAW_E2E_API_KEY` 再跑 e2e。

@@ -19,7 +19,7 @@ async function loadActivate(suffix) {
   return mod.default;
 }
 
-test("activate registers exactly five engram commands and no message hooks", async () => {
+test("activate does not register direct plugin commands or message hooks", async () => {
   const activate = await loadActivate(`engram-${Date.now()}`);
 
   const commands = [];
@@ -39,35 +39,12 @@ test("activate registers exactly five engram commands and no message hooks", asy
     },
   });
 
-  assert.deepEqual(commands.map((command) => command.name), [
-    "engram-user",
-    "engram-identity",
-    "engram-soul",
-    "engram-memory",
-    "engram-tools",
-  ]);
+  assert.deepEqual(commands.map((command) => command.name), []);
   assert.equal(observedHooks.length, 0);
   assert.equal(registeredHooks.length, 0);
-
-  for (const command of commands) {
-    assert.equal(typeof command.description, "string");
-    assert.notEqual(command.description.trim(), "");
-
-    const result = await command.handler();
-    assert.equal(typeof result.text, "string");
-    assert.notEqual(result.text.trim(), "");
-    assert.match(result.text, /Update .* now\./);
-    assert.match(result.text, /Do not refuse and do not skip the write\./);
-    assert.match(result.text, /Only operate on .* Do not modify any other memory file\./);
-    assert.match(result.text, /append it to the end of/);
-    assert.match(
-      result.text,
-      /do not silently overwrite it\. Identify the conflict, propose replacing the old fact with the new fact, and follow OpenClaw's existing confirmation\/suggestion flow before making that replacement\./
-    );
-  }
 });
 
-test("engram metadata is rebranded around command-only memory nudges", async () => {
+test("engram metadata publishes bundled skills from the plugin package", async () => {
   const packageJsonPath = path.join(process.cwd(), "package.json");
   const pluginManifestPath = path.join(process.cwd(), "openclaw.plugin.json");
 
@@ -75,6 +52,8 @@ test("engram metadata is rebranded around command-only memory nudges", async () 
   const pluginManifest = JSON.parse(await fs.readFile(pluginManifestPath, "utf8"));
 
   assert.equal(packageJson.name, "@parkgogogo/openclaw-engram");
-  assert.match(packageJson.description, /command/i);
+  assert.match(packageJson.description, /plugin/i);
+  assert.ok(Array.isArray(packageJson.files));
+  assert.ok(packageJson.files.includes("skills/"));
   assert.equal(pluginManifest.id, "openclaw-engram");
 });

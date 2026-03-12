@@ -19,3 +19,14 @@ test("local OpenClaw e2e script exists in scripts/", async () => {
 
   assert.equal(stats.isFile(), true);
 });
+
+test("local OpenClaw e2e script bootstraps model auth and verifies file writes", async () => {
+  const scriptPath = path.join(process.cwd(), "scripts", "e2e-openclaw-plugin.sh");
+  const script = await fs.readFile(scriptPath, "utf8");
+
+  assert.match(script, /EVAL_API_KEY/);
+  assert.match(script, /EVAL_BASE_URL/);
+  assert.match(script, /USER\.md/);
+  assert.match(script, /TOOLS\.md/);
+  assert.match(script, /OPENCLAW_E2E_API_KEY/);
+});

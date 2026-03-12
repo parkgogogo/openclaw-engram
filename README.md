@@ -9,7 +9,7 @@ No background analysis.
 No hidden write decisions.  
 No memory system trying to be smarter than you.
 
-Just run a command. OpenClaw updates the memory file you meant.
+Install one plugin. Get five bundled skill commands. OpenClaw updates the memory file you meant.
 
 ## Install
 
@@ -49,7 +49,7 @@ You decide when memory should change.
 
 ## How It Works
 
-Each command maps to one memory file:
+The plugin ships five bundled `user-invocable` skills, each exposed as a slash command:
 
 - `/engram-user`
 - `/engram-identity`
@@ -57,7 +57,7 @@ Each command maps to one memory file:
 - `/engram-memory`
 - `/engram-tools`
 
-When you run one, OpenClaw is told to update that specific file.
+When you run one, OpenClaw routes the command into the agent and updates that specific file.
 
 That is the whole product.
 
@@ -100,6 +100,8 @@ npm test
 npm run e2e:openclaw-plugin
 ```
 
-`npm test` verifies the command contract and package metadata.
+`npm test` verifies the bundled-skill contract and package metadata.
 
-`npm run e2e:openclaw-plugin` runs the real local OpenClaw gateway flow with an isolated profile.
+`npm run e2e:openclaw-plugin` runs the real local OpenClaw gateway flow with an isolated profile and verifies actual writes to `USER.md` and `TOOLS.md`.
+
+If you need to override the `.env` key for e2e, export `OPENCLAW_E2E_API_KEY` before running the script.

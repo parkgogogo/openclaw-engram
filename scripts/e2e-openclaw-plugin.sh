@@ -21,6 +21,13 @@ GATEWAY_LOG="$ARTIFACTS_DIR/gateway.log"
 TARBALL_PATH=""
 GATEWAY_PID=""
 HOST_HOME="${HOME}"
+ENV_FILE="$ROOT_DIR/.env"
+EVAL_BASE_URL=""
+EVAL_API_KEY=""
+EVAL_MODEL=""
+OPENCLAW_E2E_BASE_URL="${OPENCLAW_E2E_BASE_URL:-}"
+OPENCLAW_E2E_API_KEY="${OPENCLAW_E2E_API_KEY:-}"
+OPENCLAW_E2E_MODEL="${OPENCLAW_E2E_MODEL:-}"
 
 export HOME="$TMP_ROOT/home"
 export XDG_CONFIG_HOME="$TMP_ROOT/xdg-config"
@@ -114,6 +121,35 @@ assert_contains() {
   fi
 }
 
+assert_contains_ci() {
+  local file_path="$1"
+  local needle="$2"
+
+  if ! grep -Fiq "$needle" "$file_path"; then
+    fail "expected '$needle' in $file_path"
+  fi
+}
+
+wait_for_file_content() {
+  local file_path="$1"
+  local needle="$2"
+  local attempts="${3:-30}"
+
+  for ((i = 1; i <= attempts; i++)); do
+    if [[ -f "$file_path" ]] && grep -Fiq "$needle" "$file_path"; then
+      return 0
+    fi
+
+    if [[ -n "$GATEWAY_PID" ]] && ! kill -0 "$GATEWAY_PID" 2>/dev/null; then
+      fail "gateway exited while waiting for $file_path"
+    fi
+
+    sleep 2
+  done
+
+  fail "timed out waiting for $file_path to contain '$needle'"
+}
+
 NVM_DIR="${NVM_DIR:-$HOST_HOME/.nvm}"
 NODE_BIN=""
 NPM_BIN=""
@@ -168,12 +204,43 @@ run_openclaw() {
   "$NODE_BIN" "$OPENCLAW_MJS" --profile "$PROFILE_NAME" "$@"
 }
 
+if [[ ! -f "$ENV_FILE" ]]; then
+  fail "missing $ENV_FILE"
+fi
+
+set -a
+# shellcheck source=/dev/null
+source "$ENV_FILE"
+set +a
+
+EVAL_BASE_URL="${OPENCLAW_E2E_BASE_URL:-${EVAL_BASE_URL:-}}"
+EVAL_API_KEY="${OPENCLAW_E2E_API_KEY:-${EVAL_API_KEY:-}}"
+EVAL_MODEL="${OPENCLAW_E2E_MODEL:-${EVAL_MODEL:-}}"
+
+if [[ -z "$EVAL_BASE_URL" ]]; then
+  fail "EVAL_BASE_URL is required in $ENV_FILE"
+fi
+
+if [[ -z "$EVAL_API_KEY" ]]; then
+  fail "EVAL_API_KEY is required in $ENV_FILE"
+fi
+
+if [[ -z "$EVAL_MODEL" ]]; then
+  fail "EVAL_MODEL is required in $ENV_FILE"
+fi
+
+if [[ "$EVAL_BASE_URL" != *"openrouter.ai"* ]]; then
+  fail "EVAL_BASE_URL must point at OpenRouter for this e2e script"
+fi
+
 echo "[e2e] bootstrapping isolated profile in $TMP_ROOT"
 run_openclaw onboard \
   --non-interactive \
   --accept-risk \
   --mode local \
   --flow quickstart \
+  --auth-choice openrouter-api-key \
+  --openrouter-api-key "$EVAL_API_KEY" \
   --workspace "$WORKSPACE_DIR" \
   --gateway-bind loopback \
   --gateway-port "$GATEWAY_PORT" \
@@ -196,10 +263,10 @@ echo "[e2e] installing tarball into profile $PROFILE_NAME"
 run_openclaw plugins install "$TARBALL_PATH" >/dev/null
 
 echo "[e2e] enabling plugin in profile config"
-"$NODE_BIN" - "$PROFILE_CONFIG" <<'EOF'
+"$NODE_BIN" - "$PROFILE_CONFIG" "$EVAL_MODEL" <<'EOF'
 const fs = require("node:fs");
 
-const [configPath] = process.argv.slice(2);
+const [configPath, evalModel] = process.argv.slice(2);
 const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
 config.plugins = config.plugins ?? {};
@@ -216,6 +283,20 @@ config.plugins.entries["openclaw-engram"] = {
   ...(config.plugins.entries["openclaw-engram"] ?? {}),
   enabled: true,
   config: {},
+};
+
+const primaryModel = evalModel.startsWith("openrouter/")
+  ? evalModel
+  : `openrouter/${evalModel}`;
+
+config.agents = config.agents ?? {};
+config.agents.defaults = config.agents.defaults ?? {};
+config.agents.defaults.model = config.agents.defaults.model ?? {};
+config.agents.defaults.model.primary = primaryModel;
+config.agents.defaults.models = config.agents.defaults.models ?? {};
+config.agents.defaults.models[primaryModel] = {
+  ...(config.agents.defaults.models[primaryModel] ?? {}),
+  alias: "E2E model",
 };
 
 fs.writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`);
@@ -246,10 +327,10 @@ done
 assert_contains "$HEALTH_JSON" '"ok":true'
 
 USER_IDEMPOTENCY_KEY="e2e-user-$(date +%s)-$$"
-USER_PARAMS="$(printf '{"sessionKey":"main","message":"/engram-user","idempotencyKey":"%s","timeoutMs":120000}' "$USER_IDEMPOTENCY_KEY")"
+USER_PARAMS="$(printf '{"sessionKey":"main","message":"/engram-user The user prefers concise responses and uses Neovim.","idempotencyKey":"%s","timeoutMs":120000}' "$USER_IDEMPOTENCY_KEY")"
 
 TOOLS_IDEMPOTENCY_KEY="e2e-tools-$(date +%s)-$$"
-TOOLS_PARAMS="$(printf '{"sessionKey":"main","message":"/engram-tools","idempotencyKey":"%s","timeoutMs":120000}' "$TOOLS_IDEMPOTENCY_KEY")"
+TOOLS_PARAMS="$(printf '{"sessionKey":"main","message":"/engram-tools The primary Postgres alias is pg-prod.","idempotencyKey":"%s","timeoutMs":120000}' "$TOOLS_IDEMPOTENCY_KEY")"
 
 echo "[e2e] sending /engram-user"
 if ! run_openclaw gateway call chat.send --json --expect-final --timeout 30000 --params "$USER_PARAMS" >"$USER_JSON" 2>"$USER_ERR"; then
@@ -261,15 +342,17 @@ if ! run_openclaw gateway call chat.send --json --expect-final --timeout 30000 -
   fail "/engram-tools command failed"
 fi
 
-sleep 2
+echo "[e2e] waiting for USER.md and TOOLS.md updates"
+wait_for_file_content "$WORKSPACE_DIR/USER.md" "neovim"
+wait_for_file_content "$WORKSPACE_DIR/TOOLS.md" "pg-prod"
 
 echo "[e2e] fetching chat history"
 if ! run_openclaw gateway call chat.history --json --timeout 30000 --params '{"sessionKey":"main","limit":20}' >"$HISTORY_JSON" 2>"$HISTORY_ERR"; then
   fail "chat.history failed"
 fi
 
-assert_contains "$HISTORY_JSON" "Update USER.md"
-assert_contains "$HISTORY_JSON" "Update TOOLS.md"
+assert_contains_ci "$WORKSPACE_DIR/USER.md" "neovim"
+assert_contains_ci "$WORKSPACE_DIR/TOOLS.md" "pg-prod"
 
 echo "[e2e] gateway health ok"
 cat "$HEALTH_JSON"

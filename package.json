@@ -1,11 +1,12 @@
 {
   "name": "@parkgogogo/openclaw-engram",
-  "version": "0.1.1",
-  "description": "OpenClaw plugin that provides fixed slash commands for nudging memory file updates",
+  "version": "0.2.0",
+  "description": "OpenClaw plugin that ships bundled engram skills for guided memory updates",
   "type": "module",
   "main": "src/index.ts",
   "files": [
     "src/",
+    "skills/",
     "openclaw.plugin.json",
     "README.md",
     "README.zh-CN.md",
@@ -31,7 +32,7 @@
     "plugin",
     "engram",
     "memory",
-    "commands"
+    "skills"
   ],
   "author": "",
   "license": "MIT",
