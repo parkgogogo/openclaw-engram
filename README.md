@@ -5,11 +5,11 @@
 It does not analyze conversations, call an LLM, or write memory files by itself.
 Instead, it gives you five explicit commands that return plain-text prompts for OpenClaw to act on:
 
-- `/user`
-- `/identity`
-- `/soul`
-- `/memory`
-- `/tools`
+- `/engram-user`
+- `/engram-identity`
+- `/engram-soul`
+- `/engram-memory`
+- `/engram-tools`
 
 ## Positioning
 
@@ -47,23 +47,23 @@ No additional configuration is required.
 
 ## Commands
 
-### `/user`
+### `/engram-user`
 
 Returns a prompt asking OpenClaw to update `USER.md` with stable user preferences, collaboration style, and durable personal context.
 
-### `/identity`
+### `/engram-identity`
 
 Returns a prompt asking OpenClaw to update `IDENTITY.md` with explicit identity descriptors.
 
-### `/soul`
+### `/engram-soul`
 
 Returns a prompt asking OpenClaw to update `SOUL.md` with assistant principles, boundaries, and continuity rules.
 
-### `/memory`
+### `/engram-memory`
 
 Returns a prompt asking OpenClaw to update `MEMORY.md` with long-lived shared context and lasting conclusions.
 
-### `/tools`
+### `/engram-tools`
 
 Returns a prompt asking OpenClaw to update `TOOLS.md` with tool mappings, aliases, endpoints, and environment-specific details.
 
@@ -81,6 +81,9 @@ Each command returns fixed plain text.
 ```bash
 npm install
 npm test
+npm run e2e:openclaw-plugin
 ```
 
-The test suite verifies the command registration contract and the package rebrand.
+`npm test` verifies the command registration contract, package metadata, and the presence of the local e2e entrypoint.
+
+`npm run e2e:openclaw-plugin` runs the real OpenClaw gateway flow locally in an isolated temporary profile, installs the packed tarball, and verifies slash command responses through the gateway.

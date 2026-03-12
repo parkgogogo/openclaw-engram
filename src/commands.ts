@@ -10,7 +10,7 @@ function buildPrompt(fileName: string, responsibility: string): string {
 
 export const ENGRAM_COMMANDS: EngramCommandDefinition[] = [
   {
-    name: "user",
+    name: "engram-user",
     description: "Nudge OpenClaw to update USER.md",
     prompt: buildPrompt(
       "USER.md",
@@ -18,7 +18,7 @@ export const ENGRAM_COMMANDS: EngramCommandDefinition[] = [
     ),
   },
   {
-    name: "identity",
+    name: "engram-identity",
     description: "Nudge OpenClaw to update IDENTITY.md",
     prompt: buildPrompt(
       "IDENTITY.md",
@@ -26,7 +26,7 @@ export const ENGRAM_COMMANDS: EngramCommandDefinition[] = [
     ),
   },
   {
-    name: "soul",
+    name: "engram-soul",
     description: "Nudge OpenClaw to update SOUL.md",
     prompt: buildPrompt(
       "SOUL.md",
@@ -34,7 +34,7 @@ export const ENGRAM_COMMANDS: EngramCommandDefinition[] = [
     ),
   },
   {
-    name: "memory",
+    name: "engram-memory",
     description: "Nudge OpenClaw to update MEMORY.md",
     prompt: buildPrompt(
       "MEMORY.md",
@@ -42,7 +42,7 @@ export const ENGRAM_COMMANDS: EngramCommandDefinition[] = [
     ),
   },
   {
-    name: "tools",
+    name: "engram-tools",
     description: "Nudge OpenClaw to update TOOLS.md",
     prompt: buildPrompt(
       "TOOLS.md",

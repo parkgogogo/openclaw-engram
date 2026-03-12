@@ -6,11 +6,11 @@
 
 当前提供 5 个命令：
 
-- `/user`
-- `/identity`
-- `/soul`
-- `/memory`
-- `/tools`
+- `/engram-user`
+- `/engram-identity`
+- `/engram-soul`
+- `/engram-memory`
+- `/engram-tools`
 
 ## 产品定位
 
@@ -49,23 +49,23 @@ openclaw plugins install @parkgogogo/openclaw-engram
 
 ## 命令说明
 
-### `/user`
+### `/engram-user`
 
 返回固定提示词，敦促 OpenClaw 更新 `USER.md`，内容应是稳定的用户偏好、协作方式和持久个人上下文。
 
-### `/identity`
+### `/engram-identity`
 
 返回固定提示词，敦促 OpenClaw 更新 `IDENTITY.md`，内容应是明确的身份描述。
 
-### `/soul`
+### `/engram-soul`
 
 返回固定提示词，敦促 OpenClaw 更新 `SOUL.md`，内容应是助手原则、边界和连续性规则。
 
-### `/memory`
+### `/engram-memory`
 
 返回固定提示词，敦促 OpenClaw 更新 `MEMORY.md`，内容应是长期共享背景和持久结论。
 
-### `/tools`
+### `/engram-tools`
 
 返回固定提示词，敦促 OpenClaw 更新 `TOOLS.md`，内容应是工具映射、别名、端点和环境细节。
 

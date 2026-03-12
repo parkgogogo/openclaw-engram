@@ -40,11 +40,11 @@ test("activate registers exactly five engram commands and no message hooks", asy
   });
 
   assert.deepEqual(commands.map((command) => command.name), [
-    "user",
-    "identity",
-    "soul",
-    "memory",
-    "tools",
+    "engram-user",
+    "engram-identity",
+    "engram-soul",
+    "engram-memory",
+    "engram-tools",
   ]);
   assert.equal(observedHooks.length, 0);
   assert.equal(registeredHooks.length, 0);
