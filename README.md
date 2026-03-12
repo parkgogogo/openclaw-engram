@@ -1,26 +1,15 @@
 # OpenClaw Engram
 
-`openclaw-engram` is a minimal OpenClaw plugin that exposes fixed slash commands for nudging memory updates.
+## OpenClaw memory, made simple.
 
-It does not analyze conversations, call an LLM, or write memory files by itself.
-Instead, it gives you five explicit commands that return plain-text prompts for OpenClaw to act on:
+`openclaw-engram` is the simple way to update OpenClaw memory on purpose.
 
-- `/engram-user`
-- `/engram-identity`
-- `/engram-soul`
-- `/engram-memory`
-- `/engram-tools`
+No automatic reflection pipeline.  
+No background analysis.  
+No hidden write decisions.  
+No memory system trying to be smarter than you.
 
-## Positioning
-
-OpenClaw Engram is for users who want a lighter memory workflow:
-
-- no automatic reflection pipeline
-- no background hooks
-- no write guardians or consolidation jobs
-- no hidden decision logic
-
-You decide when memory maintenance should happen by running a command.
+Just run a command. OpenClaw updates the memory file you meant.
 
 ## Install
 
@@ -28,7 +17,7 @@ You decide when memory maintenance should happen by running a command.
 openclaw plugins install @parkgogogo/openclaw-engram
 ```
 
-Add the plugin to your OpenClaw config:
+Add this to your OpenClaw config:
 
 ```json
 {
@@ -43,40 +32,65 @@ Add the plugin to your OpenClaw config:
 }
 ```
 
-No additional configuration is required.
+No extra configuration.
 
-## Commands
+## Why Engram
+
+Reflection was powerful.
+Engram is simpler.
+
+It turns memory writing into an explicit action:
+
+- one command
+- one target file
+- one clear write intent
+
+You decide when memory should change.
+
+## How It Works
+
+Each command maps to one memory file:
+
+- `/engram-user`
+- `/engram-identity`
+- `/engram-soul`
+- `/engram-memory`
+- `/engram-tools`
+
+When you run one, OpenClaw is told to update that specific file.
+
+That is the whole product.
+
+## Writing Rules
+
+Engram keeps the rules simple:
+
+- only update the target file
+- additive information should be appended
+- conflicting facts should go through OpenClaw's confirmation flow before replacement
+- the command means the file should be updated, not skipped
+
+## The Five Commands
 
 ### `/engram-user`
 
-Returns a prompt asking OpenClaw to update `USER.md` with stable user preferences, collaboration style, and durable personal context.
+Update `USER.md`.
 
 ### `/engram-identity`
 
-Returns a prompt asking OpenClaw to update `IDENTITY.md` with explicit identity descriptors.
+Update `IDENTITY.md`.
 
 ### `/engram-soul`
 
-Returns a prompt asking OpenClaw to update `SOUL.md` with assistant principles, boundaries, and continuity rules.
+Update `SOUL.md`.
 
 ### `/engram-memory`
 
-Returns a prompt asking OpenClaw to update `MEMORY.md` with long-lived shared context and lasting conclusions.
+Update `MEMORY.md`.
 
 ### `/engram-tools`
 
-Returns a prompt asking OpenClaw to update `TOOLS.md` with tool mappings, aliases, endpoints, and environment-specific details.
-
-## Behavior
-
-Each command returns fixed plain text.
-
-- No variables are interpolated
-- No current conversation is analyzed
-- The command means the target file must be updated
-- Additive information should be appended to the target file
-- Conflicting information should go through OpenClaw's confirmation flow before replacement
-- No file is written directly by the plugin
+Update `TOOLS.md`.
 
 ## Development
 
@@ -86,6 +100,6 @@ npm test
 npm run e2e:openclaw-plugin
 ```
 
-`npm test` verifies the command registration contract, package metadata, and the presence of the local e2e entrypoint.
+`npm test` verifies the command contract and package metadata.
 
-`npm run e2e:openclaw-plugin` runs the real OpenClaw gateway flow locally in an isolated temporary profile, installs the packed tarball, and verifies slash command responses through the gateway.
+`npm run e2e:openclaw-plugin` runs the real local OpenClaw gateway flow with an isolated profile.
