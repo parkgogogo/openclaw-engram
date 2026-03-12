@@ -73,8 +73,10 @@ Each command returns fixed plain text.
 
 - No variables are interpolated
 - No current conversation is analyzed
+- The command means the target file must be updated
+- Additive information should be appended to the target file
+- Conflicting information should go through OpenClaw's confirmation flow before replacement
 - No file is written directly by the plugin
-- If there is nothing durable to record, OpenClaw should decline to write
 
 ## Development
 

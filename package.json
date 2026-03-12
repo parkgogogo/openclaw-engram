@@ -1,6 +1,6 @@
 {
   "name": "@parkgogogo/openclaw-engram",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenClaw plugin that provides fixed slash commands for nudging memory file updates",
   "type": "module",
   "main": "src/index.ts",

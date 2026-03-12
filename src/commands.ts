@@ -2,9 +2,13 @@ import type { EngramCommandDefinition } from "./types.js";
 
 function buildPrompt(fileName: string, responsibility: string): string {
   return [
-    `Update ${fileName} with durable information about ${responsibility}.`,
-    `Write only if there is stable, worthwhile information that belongs in ${fileName}.`,
-    "If there is no durable update to make, do not write anything.",
+    `Update ${fileName} now.`,
+    `This command means the user explicitly wants ${fileName} to be updated. Do not refuse and do not skip the write.`,
+    `Only operate on ${fileName}. Do not modify any other memory file.`,
+    `If the new information is additive, append it to the end of ${fileName}.`,
+    "If the new information conflicts with an existing fact in " +
+      `${fileName}, do not silently overwrite it. Identify the conflict, propose replacing the old fact with the new fact, and follow OpenClaw's existing confirmation/suggestion flow before making that replacement.`,
+    `Keep the update scoped to durable information about ${responsibility}.`,
   ].join(" ");
 }
 

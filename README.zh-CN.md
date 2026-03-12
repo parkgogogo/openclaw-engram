@@ -75,8 +75,10 @@ openclaw plugins install @parkgogogo/openclaw-engram
 
 - 不读取当前会话
 - 不插入变量
+- 命令一旦触发，就要求更新对应目标文件
+- 新信息默认追加到目标文件末尾
+- 如果有冲突事实，先提出替换建议并走 OpenClaw 现有确认流程
 - 不直接写文件
-- 如果没有足够稳定的信息，OpenClaw 应该不写入
 
 ## 开发
 

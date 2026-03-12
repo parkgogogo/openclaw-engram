@@ -56,6 +56,14 @@ test("activate registers exactly five engram commands and no message hooks", asy
     const result = await command.handler();
     assert.equal(typeof result.text, "string");
     assert.notEqual(result.text.trim(), "");
+    assert.match(result.text, /Update .* now\./);
+    assert.match(result.text, /Do not refuse and do not skip the write\./);
+    assert.match(result.text, /Only operate on .* Do not modify any other memory file\./);
+    assert.match(result.text, /append it to the end of/);
+    assert.match(
+      result.text,
+      /do not silently overwrite it\. Identify the conflict, propose replacing the old fact with the new fact, and follow OpenClaw's existing confirmation\/suggestion flow before making that replacement\./
+    );
   }
 });
 
