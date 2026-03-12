@@ -1,0 +1,47 @@
+{
+  "name": "@parkgogogo/openclaw-engram",
+  "version": "0.1.0",
+  "description": "OpenClaw plugin that provides fixed slash commands for nudging memory file updates",
+  "type": "module",
+  "main": "src/index.ts",
+  "files": [
+    "src/",
+    "openclaw.plugin.json",
+    "README.md",
+    "README.zh-CN.md",
+    "INSTALL.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parkgogogo/openclaw-engram.git"
+  },
+  "homepage": "https://github.com/parkgogogo/openclaw-engram#readme",
+  "bugs": {
+    "url": "https://github.com/parkgogogo/openclaw-engram/issues"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "test": "npm run build && node --test tests/commands.test.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "openclaw",
+    "plugin",
+    "engram",
+    "memory",
+    "commands"
+  ],
+  "author": "",
+  "license": "MIT",
+  "openclaw": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
