@@ -32,7 +32,7 @@ openclaw plugins install @parkgogogo/openclaw-engram
 }
 ```
 
-不需要额外配置。
+不需要额外配置。插件会自动暴露其 bundled skills——无需手动配置 `skills` 字段。
 
 ### Discord 用户
 

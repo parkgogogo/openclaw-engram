@@ -32,7 +32,7 @@ Add this to your OpenClaw config:
 }
 ```
 
-No extra configuration.
+No extra configuration. The plugin automatically exposes its bundled skills—no manual `skills` field required.
 
 ### Discord Users
 
