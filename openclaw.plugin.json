@@ -1,6 +1,7 @@
 {
   "id": "openclaw-engram",
   "entry": "src/index.ts",
+  "skills": ["skills"],
   "configSchema": {
     "type": "object",
     "additionalProperties": false,

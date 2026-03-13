@@ -34,6 +34,24 @@ openclaw plugins install @parkgogogo/openclaw-engram
 
 不需要额外配置。
 
+### Discord 用户
+
+如果你使用 Discord，但 slash commands 没有显示，你可能需要显式启用 native skill commands：
+
+```json
+{
+  "channels": {
+    "discord": {
+      "commands": {
+        "nativeSkills": true
+      }
+    }
+  }
+}
+```
+
+然后重启 OpenClaw 让配置生效。
+
 ## 为什么是 Engram
 
 Reflection 很强。
@@ -105,3 +123,38 @@ npm run e2e:openclaw-plugin
 `npm run e2e:openclaw-plugin` 会在隔离 profile 里跑一遍真实的本地 OpenClaw gateway 流程，并验证 `USER.md` 和 `TOOLS.md` 的实际写入。
 
 如果要临时覆盖 `.env` 里的 key，可以先导出 `OPENCLAW_E2E_API_KEY` 再跑 e2e。
+
+## 常见问题
+
+### Discord 里看不到命令
+
+如果安装后 engram 命令没有出现在 Discord 的 slash command 列表里：
+
+1. **检查 plugin 已启用**：
+   ```json
+   {
+     "plugins": {
+       "entries": {
+         "openclaw-engram": { "enabled": true }
+       }
+     }
+   }
+   ```
+
+2. **为 Discord 启用 native skill commands**（`auto` 设置有时不生效）：
+   ```json
+   {
+     "channels": {
+       "discord": {
+         "commands": { "nativeSkills": true }
+       }
+     }
+   }
+   ```
+
+3. **重启 OpenClaw**：
+   ```bash
+   openclaw gateway restart
+   ```
+
+4. **等待 Discord 同步** — 命令可能需要 30-60 秒才会显示。

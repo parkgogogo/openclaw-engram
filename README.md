@@ -34,6 +34,24 @@ Add this to your OpenClaw config:
 
 No extra configuration.
 
+### Discord Users
+
+If you're using Discord and the slash commands don't appear, you may need to explicitly enable native skill commands:
+
+```json
+{
+  "channels": {
+    "discord": {
+      "commands": {
+        "nativeSkills": true
+      }
+    }
+  }
+}
+```
+
+Then restart OpenClaw for the changes to take effect.
+
 ## Why Engram
 
 Reflection was powerful.
@@ -105,3 +123,38 @@ npm run e2e:openclaw-plugin
 `npm run e2e:openclaw-plugin` runs the real local OpenClaw gateway flow with an isolated profile and verifies actual writes to `USER.md` and `TOOLS.md`.
 
 If you need to override the `.env` key for e2e, export `OPENCLAW_E2E_API_KEY` before running the script.
+
+## Troubleshooting
+
+### Commands not appearing in Discord
+
+If the engram commands don't show up in Discord's slash command list after installation:
+
+1. **Check plugin is enabled** in your OpenClaw config:
+   ```json
+   {
+     "plugins": {
+       "entries": {
+         "openclaw-engram": { "enabled": true }
+       }
+     }
+   }
+   ```
+
+2. **Enable native skill commands** for Discord (the `auto` setting may not always work):
+   ```json
+   {
+     "channels": {
+       "discord": {
+         "commands": { "nativeSkills": true }
+       }
+     }
+   }
+   ```
+
+3. **Restart OpenClaw** after making config changes:
+   ```bash
+   openclaw gateway restart
+   ```
+
+4. **Wait for Discord to sync** — commands may take 30-60 seconds to appear after restart.
