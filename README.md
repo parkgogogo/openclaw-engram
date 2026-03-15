@@ -86,6 +86,8 @@ Engram keeps the rules simple:
 - only update the target file
 - additive information should be appended
 - conflicting facts should go through OpenClaw's confirmation flow before replacement
+- write memory entries in English
+- use the fewest words that still preserve the durable fact
 - the command means the file should be updated, not skipped
 
 ## The Five Commands

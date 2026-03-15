@@ -57,3 +57,21 @@ test("engram metadata publishes bundled skills from the plugin package", async (
   assert.ok(packageJson.files.includes("skills/"));
   assert.equal(pluginManifest.id, "openclaw-engram");
 });
+
+test("bundled engram skills require English and minimal durable wording", async () => {
+  const skillNames = [
+    "engram-user",
+    "engram-identity",
+    "engram-soul",
+    "engram-memory",
+    "engram-tools",
+  ];
+
+  for (const skillName of skillNames) {
+    const skillPath = path.join(process.cwd(), "skills", skillName, "SKILL.md");
+    const skill = await fs.readFile(skillPath, "utf8");
+
+    assert.match(skill, /Write the memory entry in English\./);
+    assert.match(skill, /Use the fewest words that preserve the durable fact\./);
+  }
+});

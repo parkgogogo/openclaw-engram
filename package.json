@@ -1,6 +1,6 @@
 {
   "name": "@parkgogogo/openclaw-engram",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "OpenClaw plugin that ships bundled engram skills for guided memory updates",
   "type": "module",
   "main": "src/index.ts",
